@@ -363,6 +363,27 @@ document.addEventListener("DOMContentLoaded", () => {
     return "academic";
   }
 
+  function createShareData(activityName, details) {
+    const activityUrl = `${window.location.origin}${
+      window.location.pathname
+    }?activity=${encodeURIComponent(activityName)}`;
+    const shareText = `Check out "${activityName}" at Mergington High School! ${formatSchedule(
+      details
+    )}`;
+
+    return {
+      xUrl: `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+        shareText
+      )}&url=${encodeURIComponent(activityUrl)}`,
+      facebookUrl: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+        activityUrl
+      )}`,
+      emailUrl: `mailto:?subject=${encodeURIComponent(
+        `Activity to join: ${activityName}`
+      )}&body=${encodeURIComponent(`${shareText}\n\n${activityUrl}`)}`,
+    };
+  }
+
   // Function to fetch activities from API with optional day and time filters
   async function fetchActivities() {
     // Show loading skeletons first
@@ -498,6 +519,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Format the schedule using the new helper function
     const formattedSchedule = formatSchedule(details);
+    const shareData = createShareData(name, details);
 
     // Create activity tag
     const tagHtml = `
@@ -551,6 +573,34 @@ document.addEventListener("DOMContentLoaded", () => {
             )
             .join("")}
         </ul>
+      </div>
+      <div class="social-share">
+        <span class="share-label">Share:</span>
+        <a
+          class="share-button share-x"
+          href="${shareData.xUrl}"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Share ${name} on X"
+        >
+          X
+        </a>
+        <a
+          class="share-button share-facebook"
+          href="${shareData.facebookUrl}"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Share ${name} on Facebook"
+        >
+          Facebook
+        </a>
+        <a
+          class="share-button share-email"
+          href="${shareData.emailUrl}"
+          aria-label="Share ${name} by email"
+        >
+          Email
+        </a>
       </div>
       <div class="activity-card-actions">
         ${
